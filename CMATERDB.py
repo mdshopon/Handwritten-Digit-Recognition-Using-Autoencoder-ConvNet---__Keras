@@ -18,17 +18,13 @@ batch_size = 128
 nb_classes = 10
 nb_epoch = 15
 
-# input image dimensions
-img_rows, img_cols = 28, 28
-# number of convolutional filters to use
+img_rows, img_cols = 32, 32
 nb_filters = 32
-# size of pooling area for max pooling
 nb_pool = 2
-# convolution kernel size
 kernel_size = (5, 5)
 
-# the data, shuffled and split between train and test sets
-(X_train, y_train), (X_test, y_test) = mnist.load_data()
+#Model Load
+#(X_train, y_train), (X_test, y_test) = mnist.load_data()
 
 X_train = X_train.reshape(X_train.shape[0], 1, img_rows, img_cols)
 X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)

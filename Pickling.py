@@ -44,6 +44,13 @@ def invertBackground():
                print(FILE2)
           else:
                continue
-
-
-makePickle()
+a=[]
+def fileNameG():
+     for filename in listdir("BengaliBMPConvert"):
+          a.append(filename)
+          #print(filename)
+#makePickle()
+fileNameG()
+a.sort()
+for i in range(0,6001):
+     print(a[i])
