@@ -2,9 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="08f7dcfa-a6b9-4a9d-8c22-45191b4d28ad" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Preprocessing/bangladigitdataset.mat" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Classification/Digit_Recognition_using_CNN-for_BANGLA_DIGIT.ipynb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Classification/README.md" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Preprocessing/bangladigitdataset.csv" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Preprocessing/bdd_test.csv" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Preprocessing/bdd_train.csv" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Preprocessing/create_csv_from_image.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMATERDB.py" afterPath="$PROJECT_DIR$/CMATERDB.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/keras_MNIST.py" afterPath="$PROJECT_DIR$/keras_MNIST.py" />
     </list>
     <ignored path="Keras.iws" />
     <ignored path=".idea/workspace.xml" />
