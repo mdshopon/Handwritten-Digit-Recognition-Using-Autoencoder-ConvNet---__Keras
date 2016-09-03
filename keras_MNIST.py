@@ -61,7 +61,7 @@ model.add(Dropout(0.5))
 model.add(Flatten())
 model.add(Dense(128))
 model.add(Activation('relu'))
-model.add(Dropout(0.5))
+model.add(Dropout(0.25))
 model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
 
