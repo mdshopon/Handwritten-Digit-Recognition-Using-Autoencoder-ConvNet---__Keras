@@ -122,37 +122,37 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 # X_batch, y_batch = datagen.flow(X_train, X_train, batch_size=32)
 
 #fit_generator(datagen, samples_per_epoch=len(X_train), nb_epoch=100)
-model = Sequential()
-model.add(Convolution2D(32, 5, 5, input_shape=(1, img_rows, img_cols)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
-model.add(Convolution2D(32, 3, 3))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
-model.add(Convolution2D(64, 3, 3))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
 # model = Sequential()
-# model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1],
-#                         border_mode='valid',
-#                         input_shape=(1, img_rows, img_cols)))
+# model.add(Convolution2D(32, 5, 5, input_shape=(1, img_rows, img_cols)))
 # model.add(Activation('relu'))
 # model.add(MaxPooling2D(pool_size=(2, 2)))
 #
-# model.add(Convolution2D(nb_filters, 5, 5)) #Second kernel size 5,5 and first dropout 0.5
+# model.add(Convolution2D(32, 3, 3))
 # model.add(Activation('relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
 #
-# model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
-# model.add(Dropout(0.5))
+# model.add(Convolution2D(64, 3, 3))
+# model.add(Activation('relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+
+model = Sequential()
+model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1],
+                        border_mode='valid',
+                        input_shape=(1, img_rows, img_cols)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+model.add(Convolution2D(nb_filters, 5, 5)) #Second kernel size 5,5 and first dropout 0.5
+model.add(Activation('relu'))
+
+model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
+model.add(Dropout(0.5))
 
 
 model.add(Flatten())
 model.add(Dense(128))
 model.add(Activation('relu'))
-model.add(Dropout(0.25))
+model.add(Dropout(0.5))
 model.add(Dense(nb_classes))
 model.add(Activation('softmax'))
 # model = Sequential()
@@ -217,4 +217,4 @@ print('Test accuracy:', score[1])
 print('Parameters: ', model.count_params())
 print(model.summary())
 
-## 99.27
+#99.34
