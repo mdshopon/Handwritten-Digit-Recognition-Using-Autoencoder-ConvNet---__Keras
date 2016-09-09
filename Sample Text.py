@@ -122,31 +122,39 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 # X_batch, y_batch = datagen.flow(X_train, X_train, batch_size=32)
 
 #fit_generator(datagen, samples_per_epoch=len(X_train), nb_epoch=100)
-model = Sequential()
-model.add(Convolution2D(32, 5, 5, input_shape=(1, img_rows, img_cols)))
-model.add(Activation('relu'))
-#model.add(MaxPooling2D(pool_size=(2, 2)))
-
-model.add(Convolution2D(32, 5, 5))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
-model.add(Convolution2D(64, 3, 3))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
 # model = Sequential()
-# model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1],
-#                         border_mode='valid',
-#                         input_shape=(1, img_rows, img_cols)))
+# model.add(Convolution2D(32, 5, 5, input_shape=(1, img_rows, img_cols)))
+# model.add(Activation('relu'))
+# #model.add(MaxPooling2D(pool_size=(2, 2)))
+#
+# model.add(Convolution2D(32, 5, 5))
 # model.add(Activation('relu'))
 # model.add(MaxPooling2D(pool_size=(2, 2)))
 #
-# model.add(Convolution2D(nb_filters, 5, 5)) #Second kernel size 5,5 and first dropout 0.5
+# model.add(Convolution2D(64, 3, 3))
 # model.add(Activation('relu'))
-#
-# model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
-# model.add(Dropout(0.5))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+
+model = Sequential()
+model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1],
+                        border_mode='valid',
+                        input_shape=(1, img_rows, img_cols)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+model.add(Convolution2D(nb_filters, 5, 5)) #Second kernel size 5,5 and first dropout 0.5
+model.add(Activation('relu'))
+
+
+model.add(Convolution2D(nb_filters+32, 5, 5)) #Second kernel size 5,5 and first dropout 0.5
+model.add(Activation('relu'))
+
+
+model.add(Convolution2D(nb_filters+96, 2, 2)) #Second kernel size 5,5 and first dropout 0.5
+model.add(Activation('relu'))
+
+model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
+model.add(Dropout(0.5))
 
 
 model.add(Flatten())
@@ -158,52 +166,87 @@ model.add(Activation('softmax'))
 
 
 
-model.compile(loss='binary_crossentropy',
-              optimizer='adagrad',
+model.compile(loss='categorical_crossentropy',
+              optimizer='RMSprop',
               metrics=['accuracy'])
 
-#sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 
-# model.compile(loss='categorical_crossentropy',
-#               optimizer='adadelta',
-#               metrics=['accuracy'])
-datagen = ImageDataGenerator(
-        # rotation_range=40,
-        # width_shift_range=0.2,
-        # height_shift_range=0.2,
-        # rescale=1./255,
-        # shear_range=0.2,
-        # zoom_range=0.2,
-        # horizontal_flip=True,
-        # fill_mode='nearest'
-        #featurewise_center=True,  # set input mean to 0 over the dataset
-        #samplewise_center=False,  # set each sample mean to 0
-       # featurewise_std_normalization=True,  # divide inputs by std of the dataset
-        # samplewise_std_normalization=False,  # divide each input by its std
-         #zca_whitening=True,  # apply ZCA whitening
-        # rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
-        # width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
-        # height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
-        # horizontal_flip=True,  # randomly flip images
-        # vertical_flip=False
+
+train_datagen = ImageDataGenerator(
+        #rescale=1./255,
+        shear_range=0.2,
+        zoom_range=0.2,
+        #horizontal_flip=True
         )
-datagen.fit(X_train)
 
-#datagen2=ImageDataGenerator()
-#datagen2.fit(X_test)
-model.fit_generator(datagen.flow(X_train, Y_train,
-                                 batch_size=batch_size),
-                    samples_per_epoch=X_train.shape[0],
-                    nb_epoch=nb_epoch,
-                    validation_data=(X_test, Y_test)
-                    )
+test_datagen = ImageDataGenerator()
 
-# model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch,
-#           verbose=1, validation_data=(X_test, Y_test))
+train_generator = train_datagen.flow(
+        X_train,Y_train,
+        batch_size=32)
+
+validation_generator = test_datagen.flow(
+        X_test,Y_test,
+        #target_size=(img_height, img_width),
+        batch_size=32)
+
+# fine-tune the model
+model.fit_generator(
+        train_generator,
+        samples_per_epoch=4200,
+        nb_epoch=nb_epoch,
+        validation_data=validation_generator,
+        nb_val_samples=1800
+        )
+
 score = model.evaluate(X_test, Y_test, verbose=0)
 print('Test score:', score[0])
 print('Test accuracy:', score[1])
 print('Parameters: ', model.count_params())
 print(model.summary())
 
-#99.34
+# #sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+#
+# # model.compile(loss='categorical_crossentropy',
+# #               optimizer='adadelta',
+# #               metrics=['accuracy'])
+# datagen = ImageDataGenerator(
+#         # rotation_range=40,
+#         # width_shift_range=0.2,
+#         # height_shift_range=0.2,
+#         # rescale=1./255,
+#         # shear_range=0.2,
+#         # zoom_range=0.2,
+#         # horizontal_flip=True,
+#         # fill_mode='nearest'
+#         #featurewise_center=True,  # set input mean to 0 over the dataset
+#         #samplewise_center=False,  # set each sample mean to 0
+#        # featurewise_std_normalization=True,  # divide inputs by std of the dataset
+#         # samplewise_std_normalization=False,  # divide each input by its std
+#          #zca_whitening=True,  # apply ZCA whitening
+#         # rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
+#         # width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
+#         # height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
+#         # horizontal_flip=True,  # randomly flip images
+#         # vertical_flip=False
+#         )
+# datagen.fit(X_train)
+#
+# #datagen2=ImageDataGenerator()
+# #datagen2.fit(X_test)
+# model.fit_generator(datagen.flow(X_train, Y_train,
+#                                  batch_size=batch_size),
+#                     samples_per_epoch=X_train.shape[0],
+#                     nb_epoch=nb_epoch,
+#                     validation_data=(X_test, Y_test)
+#                     )
+#
+# # model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch,
+# #           verbose=1, validation_data=(X_test, Y_test))
+# score = model.evaluate(X_test, Y_test, verbose=0)
+# print('Test score:', score[0])
+# print('Test accuracy:', score[1])
+# print('Parameters: ', model.count_params())
+# print(model.summary())
+#
+# #99.34
