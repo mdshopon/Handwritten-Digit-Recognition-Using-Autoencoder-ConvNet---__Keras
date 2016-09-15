@@ -22,6 +22,8 @@ import matplotlib.pyplot as plt
 import os
 from keras.preprocessing.image import ImageDataGenerator
 from matplotlib import pyplot
+from keras.regularizers import l2, activity_l2
+
 
 batch_size = 128
 nb_classes = 10
@@ -83,30 +85,45 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 # print(Y_test)
 
 
+# model = Sequential()
+# model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1],
+#                         border_mode='valid',
+#                         input_shape=(1, img_rows, img_cols)))
+# model.add(Activation('relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+#
+# model.add(Convolution2D(nb_filters, 5, 5))  # Second kernel size 5,5 and first dropout 0.5
+# model.add(Activation('relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+#
+#
+#
+# model.add(Convolution2D(nb_filters+32, 2, 2))  # Second kernel size 5,5 and first dropout 0.5
+# model.add(Activation('relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+# model.add(Dropout(0.2))
+#
+# model.add(Convolution2D(nb_filters+96, 2, 2))  # Second kernel size 5,5 and first dropout 0.5
+# model.add(Activation('relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+# model.add(Dropout(0.2))
+#
+# model.add(Flatten())
+# model.add(Dense(128))
+# model.add(Activation('tanh'))
+# model.add(Dropout(0.25))
+# model.add(Dense(nb_classes))
+# model.add(Activation('softmax'))
 model = Sequential()
-model.add(Convolution2D(nb_filters, kernel_size[0], kernel_size[1],
-                        border_mode='valid',
-                        input_shape=(1, img_rows, img_cols)))
-model.add(Activation('relu'))
+model.add(Convolution2D(30, 5, 5, border_mode='valid', input_shape=(1, 32, 32), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-
-model.add(Convolution2D(nb_filters, 5, 5))  # Second kernel size 5,5 and first dropout 0.5
-model.add(Activation('relu'))
+model.add(Convolution2D(15, 3, 3, activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-
-model.add(Convolution2D(nb_filters+32, 2, 2))  # Second kernel size 5,5 and first dropout 0.5
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.5))
-
-
+model.add(Dropout(0.2))
 model.add(Flatten())
-model.add(Dense(128))
-model.add(Activation('relu'))
-model.add(Dropout(0.25))
-model.add(Dense(nb_classes))
-model.add(Activation('softmax'))
-
+model.add(Dense(128, activation='relu'))
+model.add(Dense(50, activation='relu'))
+model.add(Dense(10, activation='softmax'))
 
 model.compile(loss='categorical_crossentropy',
               optimizer='RMSprop',
@@ -115,15 +132,27 @@ model.compile(loss='categorical_crossentropy',
 
 train_datagen = ImageDataGenerator(
         #rescale=1./255,
-        rotation_range=0.1,
-        width_shift_range=0.2,
-        height_shift_range=0.1,
-        shear_range=0.1,
-        zoom_range=0.2,
-        channel_shift_range=0.1,
-        cval=0.1
+        #zca_whitening=True,
+        #featurewise_std_normalization=True,
+         rotation_range=0.3,
+         width_shift_range=0.2,
+      #   height_shift_range=0.2
+        # shear_range=0.1,
+        # shear_range=0.1,
+         #zoom_range=0.1,
+       #  channel_shift_range=0.1,
+       #  cval=0.1
+        # rotation_range=0.2,
+        # width_shift_range=0.2,
+        # height_shift_range=0.2,
+        # shear_range=0.2,
+       #  zoom_range=0.2
+        # fill_mode='nearest'
         )
-test_datagen = ImageDataGenerator()
+train_datagen.fit(X_train, augment=True)
+test_datagen = ImageDataGenerator(
+
+)
 
 train_generator = train_datagen.flow(
          X_train, Y_train,
@@ -132,12 +161,15 @@ validation_generator = test_datagen.flow(
         X_test,Y_test,
         batch_size=batch_size)
 
+from keras.callbacks import TensorBoard
+
 model.fit_generator(
         train_generator,
         samples_per_epoch=4200,
         nb_epoch=nb_epoch,
         validation_data=validation_generator,
-        nb_val_samples=1800)
+        nb_val_samples=1800,
+        callbacks = [TensorBoard(log_dir='/tmp/model')])
 
 
 
