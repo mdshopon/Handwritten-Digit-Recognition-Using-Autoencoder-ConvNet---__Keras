@@ -45,27 +45,95 @@ nb_pool = 2
 kernel_size = (5, 5)
 
 # Creating the Dataset
+# Train = []
+# Test = []
+# for i in range(0, 4200):
+#     Train.append(i % 10)
+# for i in range(4200, 6000):
+#     Test.append(i % 10)
+# for i in range(0,10):
+#     path = 'NewDGray/'+str(i)
+#     num_files = len([f for f in os.listdir(path)
+#                      if os.path.isfile(os.path.join(path, f))])
+#     for j in range(0,num_files):
+#         Train.append(i)
+#
+# for i in range(0,10):
+#     path = 'NewDGray/test/'+str(i)
+#     num_files = len([f for f in os.listdir(path)
+#                      if os.path.isfile(os.path.join(path, f))])
+#     for j in range(0,num_files):
+#         Test.append(i)
+
+
+
+# y_train = np.asarray(Train)
+# y_test = np.asarray(Test)
+#
+# Name = []
+# for filename in listdir("Train"):
+#     if filename.endswith(".bmp"):
+#         Name.append("Train/" + filename)
+# Name.sort()
+# for i in range(0,10):
+#     L=[]
+#     for filename in listdir("NewDGray/"+str(i)+"/"):
+#         #rint(filename)
+#         if(filename.endswith(".tif")):
+#             L.append("NewDGray/"+str(i)+"/"+filename)
+#     L.sort()
+#     for i in range(0,len(L)):
+#         Name.append(L[i])
+# X_train = np.array([np.array(Image.open(fname)) for fname in Name])
+# Name2 = []
+#
+# for filename in listdir("Test"):
+#     if filename.endswith(".bmp"):
+#         Name2.append("Test/" + filename)
+# Name2.sort()
+# for i in range(0,10):
+#     L=[]
+#     for filename in listdir("NewDGray/test/"+str(i)+"/"):
+#         if(filename.endswith(".tif")):
+#             L.append("NewDGray/test/"+str(i)+"/"+filename)
+#     L.sort()
+#     for i in range(0,len(L)):
+#         Name2.append(L[i])
+#     #Name2.append(L)
+# X_test = np.array([np.array(Image.open(fname)) for fname in Name2])
+#
+# X_train = X_train.reshape(X_train.shape[0], 1, img_rows, img_cols)
+# X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
+# X_train = X_train.astype('float32')
+# X_test = X_test.astype('float32')
+# X_train /= 255
+# X_test /= 255
+#
+# Y_train = np_utils.to_categorical(y_train, nb_classes)
+# Y_test = np_utils.to_categorical(y_test, nb_classes)
+#
+# print(X_train.shape)
+# print(X_test.shape)
+
+batch_size = 128
+nb_classes = 10
+nb_epoch = 200
+# input image dimensions
+img_rows, img_cols = 32, 32
+# number of convolutional filters to use
+nb_filters = 32
+# size of pooling area for max pooling
+nb_pool = 2
+# convolution kernel size
+kernel_size = (5, 5)
+
+# Creating the Dataset
 Train = []
 Test = []
 for i in range(0, 4200):
     Train.append(i % 10)
 for i in range(4200, 6000):
     Test.append(i % 10)
-for i in range(0,10):
-    path = 'NewDGray/'+str(i)
-    num_files = len([f for f in os.listdir(path)
-                     if os.path.isfile(os.path.join(path, f))])
-    for j in range(0,num_files):
-        Train.append(i)
-
-for i in range(0,10):
-    path = 'NewDGray/test/'+str(i)
-    num_files = len([f for f in os.listdir(path)
-                     if os.path.isfile(os.path.join(path, f))])
-    for j in range(0,num_files):
-        Test.append(i)
-
-
 
 y_train = np.asarray(Train)
 y_test = np.asarray(Test)
@@ -75,31 +143,12 @@ for filename in listdir("Train"):
     if filename.endswith(".bmp"):
         Name.append("Train/" + filename)
 Name.sort()
-for i in range(0,10):
-    L=[]
-    for filename in listdir("NewDGray/"+str(i)+"/"):
-        #rint(filename)
-        if(filename.endswith(".tif")):
-            L.append("NewDGray/"+str(i)+"/"+filename)
-    L.sort()
-    for i in range(0,len(L)):
-        Name.append(L[i])
 X_train = np.array([np.array(Image.open(fname)) for fname in Name])
 Name2 = []
-
 for filename in listdir("Test"):
     if filename.endswith(".bmp"):
         Name2.append("Test/" + filename)
 Name2.sort()
-for i in range(0,10):
-    L=[]
-    for filename in listdir("NewDGray/test/"+str(i)+"/"):
-        if(filename.endswith(".tif")):
-            L.append("NewDGray/test/"+str(i)+"/"+filename)
-    L.sort()
-    for i in range(0,len(L)):
-        Name2.append(L[i])
-    #Name2.append(L)
 X_test = np.array([np.array(Image.open(fname)) for fname in Name2])
 
 X_train = X_train.reshape(X_train.shape[0], 1, img_rows, img_cols)
@@ -111,10 +160,6 @@ X_test /= 255
 
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
-
-print(X_train.shape)
-print(X_test.shape)
-
 
 
 #Autoencoder Part:
@@ -143,6 +188,12 @@ decoded = Convolution2D(1, 3, 3, activation='sigmoid', border_mode='same')(x)
 autoencoder = Model(input_img, decoded)
 autoencoder.compile(optimizer='RMSprop', loss='binary_crossentropy')
 
+decoded_imgs = autoencoder.predict(X_test)
+
+
+
+
+
 datagen = ImageDataGenerator(
 
     rotation_range=0.8,
@@ -153,8 +204,8 @@ datagen = ImageDataGenerator(
 datagen.fit(X_train,augment=True)
 
 autoencoder.fit_generator(datagen.flow(X_train, X_train, batch_size=128,shuffle=True),
-                          nb_epoch=20,
-                          samples_per_epoch=23513,
+                          nb_epoch=40,
+                          samples_per_epoch=4200,
                           validation_data=(X_test, X_test)
                           )
 
@@ -169,6 +220,7 @@ autoencoder.fit_generator(datagen.flow(X_train, X_train, batch_size=128,shuffle=
 #autoencoder.load_weights('autoencoder.h5')
 #encoded_imgs = autoencoder.predict(X_train)
 decoded_imgs = autoencoder.predict(X_test)
+
 
 #autoencoder.save('autoencoder.h5')
 
@@ -214,14 +266,14 @@ from keras.callbacks import TensorBoard
 
 MODEL.fit_generator(
         train_generator,
-        samples_per_epoch=23513,
-        nb_epoch=120,
+        samples_per_epoch=4200,
+        nb_epoch=100,
         validation_data=validation_generator,
-        nb_val_samples=5786,
+        nb_val_samples=1800,
         callbacks = [TensorBoard(log_dir='/tmp/oencoder3')])
 
 
-
+MODEL.save('MyModel.h5')
 score = MODEL.evaluate(X_test, Y_test, verbose=0)
 print('Test score:', score[0])
 print('Test accuracy:', score[1])

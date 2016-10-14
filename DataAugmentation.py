@@ -77,10 +77,26 @@ print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
 
 print(X_train[0].shape)
+from matplotlib import pyplot
 
 # convert class vectors to binary class matrices
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
+datagen = ImageDataGenerator( rotation_range=10,
+          width_shift_range=0.1,
+         height_shift_range=0.1
+        )
+# fit parameters from data
+datagen.fit(X_train)
+# configure batch size and retrieve one batch of images
+for X_batch, y_batch in datagen.flow(X_train, y_train, batch_size=9):
+	# create a grid of 3x3 images
+	for i in range(0, 3):
+		pyplot.subplot(330 + 1 + i)
+		pyplot.imshow(X_batch[i].reshape(32, 32), cmap=pyplot.get_cmap('gray'))
+	# show the plot
+	pyplot.show()
+	break
 # print(Y_train)
 # print(Y_test)
 
@@ -114,67 +130,75 @@ Y_test = np_utils.to_categorical(y_test, nb_classes)
 # model.add(Dropout(0.25))
 # model.add(Dense(nb_classes))
 # model.add(Activation('softmax'))
-model = Sequential()
-model.add(Convolution2D(30, 5, 5, border_mode='valid', input_shape=(1, 32, 32), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Convolution2D(15, 3, 3, activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.2))
-model.add(Flatten())
-model.add(Dense(128, activation='relu'))
-model.add(Dense(50, activation='relu'))
-model.add(Dense(10, activation='softmax'))
-
-model.compile(loss='categorical_crossentropy',
-              optimizer='RMSprop',
-              metrics=['accuracy'])
-
-
-train_datagen = ImageDataGenerator(
-        #rescale=1./255,
-        #zca_whitening=True,
-        #featurewise_std_normalization=True,
-         rotation_range=0.3,
-         width_shift_range=0.2,
-      #   height_shift_range=0.2
-        # shear_range=0.1,
-        # shear_range=0.1,
-         #zoom_range=0.1,
-       #  channel_shift_range=0.1,
-       #  cval=0.1
-        # rotation_range=0.2,
-        # width_shift_range=0.2,
-        # height_shift_range=0.2,
-        # shear_range=0.2,
-       #  zoom_range=0.2
-        # fill_mode='nearest'
-        )
-train_datagen.fit(X_train, augment=True)
-test_datagen = ImageDataGenerator(
-
-)
-
-train_generator = train_datagen.flow(
-         X_train, Y_train,
-         batch_size=batch_size)
-validation_generator = test_datagen.flow(
-        X_test,Y_test,
-        batch_size=batch_size)
-
-from keras.callbacks import TensorBoard
-
-model.fit_generator(
-        train_generator,
-        samples_per_epoch=4200,
-        nb_epoch=nb_epoch,
-        validation_data=validation_generator,
-        nb_val_samples=1800,
-        callbacks = [TensorBoard(log_dir='/tmp/model')])
-
-
-
-score = model.evaluate(X_test, Y_test, verbose=0)
-print('Test score:', score[0])
-print('Test accuracy:', score[1])
-# print('Parameters: ', model.count_params())
-# print(model.summar
+# model = Sequential()
+# model.add(Convolution2D(30, 5, 5, border_mode='valid', input_shape=(1, 32, 32), activation='relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+# model.add(Convolution2D(15, 3, 3, activation='relu'))
+# model.add(MaxPooling2D(pool_size=(2, 2)))
+# model.add(Dropout(0.2))
+# model.add(Flatten())
+# model.add(Dense(128, activation='relu'))
+# model.add(Dense(50, activation='relu'))
+# model.add(Dense(10, activation='softmax'))
+#
+# model.compile(loss='categorical_crossentropy',
+#               optimizer='RMSprop',
+#               metrics=['accuracy'])
+#
+#
+# train_datagen = ImageDataGenerator(
+#         #rescale=1./255,
+#         #zca_whitening=True,
+#         #featurewise_std_normalization=True,
+#          rotation_range=0.3,
+#          width_shift_range=0.2,
+#       #   height_shift_range=0.2
+#         # shear_range=0.1,
+#         # shear_range=0.1,
+#          #zoom_range=0.1,
+#        #  channel_shift_range=0.1,
+#        #  cval=0.1
+#         # rotation_range=0.2,
+#         # width_shift_range=0.2,
+#         # height_shift_range=0.2,
+#         # shear_range=0.2,
+#        #  zoom_range=0.2
+#         # fill_mode='nearest'
+#         )
+# train_datagen.fit(X_train, augment=True)
+# test_datagen = ImageDataGenerator(
+#
+# )
+#
+# train_generator = train_datagen.flow(
+#          X_train, Y_train,
+#          batch_size=batch_size)
+# validation_generator = test_datagen.flow(
+#         X_test,Y_test,
+#         batch_size=batch_size)
+#
+# from keras.callbacks import TensorBoard
+#
+# model.fit_generator(
+#         train_generator,
+#         samples_per_epoch=4200,
+#         nb_epoch=1,
+#         validation_data=validation_generator,
+#         nb_val_samples=1800,
+#         callbacks = [TensorBoard(log_dir='/tmp/model')])
+#
+#
+# for X_batch, y_batch in datagen.flow(X_train, y_train, batch_size=9):
+# 	# create a grid of 3x3 images
+# 	for i in range(0, 9):
+# 		pyplot.subplot(330 + 1 + i)
+# 		pyplot.imshow(X_batch[i].reshape(28, 28), cmap=pyplot.get_cmap('gray'))
+# 	# show the plot
+# 	pyplot.show()
+# 	break
+#
+# score = model.evaluate(X_test, Y_test, verbose=0)
+# print('Test score:', score[0])
+# print('Test accuracy:', score[1])
+# # print('Parameters: ', model.count_params())
+# # print(model.summar
