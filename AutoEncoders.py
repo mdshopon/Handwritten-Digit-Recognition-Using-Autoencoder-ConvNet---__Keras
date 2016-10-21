@@ -115,15 +115,15 @@ def YCMATERTEST():
         Test.append(i % 10)
     return Test
 
-Name2=XINDIANTEST()
-Name=XCMATERTRAIN()
+Name2=XCMATERTEST()
+Name=XINDIANTRAIN()
 
-print(Name)
+# print(Name)
 
-y_test=YINDIANTEST()
-y_train=YCMATERTRAIN()
+y_test=YCMATERTEST()
+y_train=YINDIANTRAIN()
 
-print(y_train)
+# print(y_train)
 
 X_train = np.array([np.array(Image.open(fname)) for fname in Name])
 X_test = np.array([np.array(Image.open(fname)) for fname in Name2])
@@ -138,11 +138,11 @@ Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
 
-print(X_train.shape)
-print(X_test.shape)
+# print(X_train.shape)
+# print(X_test.shape)
 
-MODEL=load_model('MyModel.h5')
-score=MODEL.evaluate(X_test,Y_test,verbose=2)
+MODEL=load_model('shopon-model.h5')
+score=MODEL.evaluate(X_test,Y_test,verbose=0)
 
 print('Test score:', score[0])
 print('Test accuracy:', score[1])

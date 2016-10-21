@@ -64,88 +64,136 @@ def toGray():
                # print(col_img.shape)
             else:
                 continue
-#invertBackground()
-#toGray()
-import os.path
-batch_size = 128
-nb_classes = 10
-nb_epoch = 200
-# input image dimensions
-img_rows, img_cols = 32, 32
-# number of convolutional filters to use
-nb_filters = 32
-# size of pooling area for max pooling
-nb_pool = 2
-# convolution kernel size
-kernel_size = (5, 5)
 
+def CHANGE():
+    for i in range(0, 10):
+        for filename in listdir("NewDGrayM/test/" + str(i)):
+            if filename.endswith(".tif"):
+                FILE = "NewDGrayM/test/" + str(i) + "/" + filename;
+                img = cv2.imread(FILE)
+                col_img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+                image = cv2.resize(col_img,(16, 16))
+                FILE = "NewDGrayMC/test/" + str(i) + "/" + filename
+                cv2.imwrite(FILE, image)
+                print(image.shape)
+            else:
+                continue
+def CHANGE2():
+    for i in range(0, 10):
+        for filename in listdir("NewDGrayM/test/" + str(i)):
+            if filename.endswith(".tif"):
+                FILE = "NewDGrayM/test/" + str(i) + "/" + filename;
+                img = cv2.imread(FILE)
+                col_img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+                image = cv2.resize(col_img,(32, 32))
+                FILE = "NewDGrayMC/test/" + str(i) + "/" + filename
+                cv2.imwrite(FILE, image)
+                print(image.shape)
+            else:
+                continue
+def SMALLINDIAN():
+    for i in range(0, 10):
+        Count=0
+        for filename in listdir("NewDGray/" + str(i)):
+            if filename.endswith(".tif"):
+                FILE = "NewDGray/" + str(i) + "/" + filename;
+                img = cv2.imread(FILE)
+                #print(img.shape)
+                col_img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+                image = cv2.resize(col_img,(32, 32))
+                FILE = "NewDGraySmall/" + str(i) + "/" + filename
+                cv2.imwrite(FILE, image)
+                print(image.shape)
+                Count=Count+1
+                if(Count==600):
+                    break
+            else:
+                continue
 
-Train = []
-Test = []
-for i in range(0, 4200):
-    Train.append(i % 10)
-for i in range(4200, 6000):
-    Test.append(i % 10)
-for i in range(0,10):
-    path = 'NewDGray/'+str(i)
-    num_files = len([f for f in os.listdir(path)
-                     if os.path.isfile(os.path.join(path, f))])
-    for j in range(0,num_files):
-        Train.append(i)
-
-for i in range(0,10):
-    path = 'NewDGray/test/'+str(i)
-    num_files = len([f for f in os.listdir(path)
-                     if os.path.isfile(os.path.join(path, f))])
-    for j in range(0,num_files):
-        Test.append(i)
-
-
-
-y_train = np.asarray(Train)
-y_test = np.asarray(Test)
-
-Name = []
-for filename in listdir("Train"):
-    if filename.endswith(".bmp"):
-        Name.append("Train/" + filename)
-Name.sort()
-for i in range(0,10):
-    L=[]
-    for filename in listdir("NewDGray/"+str(i)+"/"):
-        #rint(filename)
-        if(filename.endswith(".tif")):
-            L.append("NewDGray/"+str(i)+"/"+filename)
-    L.sort()
-    for i in range(0,len(L)):
-        Name.append(L[i])
-X_train = np.array([np.array(Image.open(fname)) for fname in Name])
-Name2 = []
-
-for filename in listdir("Test"):
-    if filename.endswith(".bmp"):
-        Name2.append("Test/" + filename)
-Name2.sort()
-for i in range(0,10):
-    L=[]
-    for filename in listdir("NewDGray/test/"+str(i)+"/"):
-        if(filename.endswith(".tif")):
-            L.append("NewDGray/test/"+str(i)+"/"+filename)
-    L.sort()
-    for i in range(0,len(L)):
-        Name2.append(L[i])
-    #Name2.append(L)
-X_test = np.array([np.array(Image.open(fname)) for fname in Name2])
-
-X_train = X_train.reshape(X_train.shape[0], 1, img_rows, img_cols)
-X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
-X_train = X_train.astype('float32')
-X_test = X_test.astype('float32')
-X_train /= 255
-X_test /= 255
-
-Y_train = np_utils.to_categorical(y_train, nb_classes)
-Y_test = np_utils.to_categorical(y_test, nb_classes)
-
-print(X_train.shape)
-print(X_test.shape)
+SMALLINDIAN()
+#
+# #invertBackground()
+# #toGray()
+# import os.path
+# batch_size = 128
+# nb_classes = 10
+# nb_epoch = 200
+# # input image dimensions
+# img_rows, img_cols = 32, 32
+# # number of convolutional filters to use
+# nb_filters = 32
+# # size of pooling area for max pooling
+# nb_pool = 2
+# # convolution kernel size
+# kernel_size = (5, 5)
+#
+#
+# Train = []
+# Test = []
+# for i in range(0, 4200):
+#     Train.append(i % 10)
+# for i in range(4200, 6000):
+#     Test.append(i % 10)
+# for i in range(0,10):
+#     path = 'NewDGray/'+str(i)
+#     num_files = len([f for f in os.listdir(path)
+#                      if os.path.isfile(os.path.join(path, f))])
+#     for j in range(0,num_files):
+#         Train.append(i)
+#
+# for i in range(0,10):
+#     path = 'NewDGray/test/'+str(i)
+#     num_files = len([f for f in os.listdir(path)
+#                      if os.path.isfile(os.path.join(path, f))])
+#     for j in range(0,num_files):
+#         Test.append(i)
+#
+#
+#
+# y_train = np.asarray(Train)
+# y_test = np.asarray(Test)
+#
+# Name = []
+# for filename in listdir("Train"):
+#     if filename.endswith(".bmp"):
+#         Name.append("Train/" + filename)
+# Name.sort()
+# for i in range(0,10):
+#     L=[]
+#     for filename in listdir("NewDGray/"+str(i)+"/"):
+#         #rint(filename)
+#         if(filename.endswith(".tif")):
+#             L.append("NewDGray/"+str(i)+"/"+filename)
+#     L.sort()
+#     for i in range(0,len(L)):
+#         Name.append(L[i])
+# X_train = np.array([np.array(Image.open(fname)) for fname in Name])
+# Name2 = []
+#
+# for filename in listdir("Test"):
+#     if filename.endswith(".bmp"):
+#         Name2.append("Test/" + filename)
+# Name2.sort()
+# for i in range(0,10):
+#     L=[]
+#     for filename in listdir("NewDGray/test/"+str(i)+"/"):
+#         if(filename.endswith(".tif")):
+#             L.append("NewDGray/test/"+str(i)+"/"+filename)
+#     L.sort()
+#     for i in range(0,len(L)):
+#         Name2.append(L[i])
+#     #Name2.append(L)
+# X_test = np.array([np.array(Image.open(fname)) for fname in Name2])
+#
+# X_train = X_train.reshape(X_train.shape[0], 1, img_rows, img_cols)
+# X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
+# X_train = X_train.astype('float32')
+# X_test = X_test.astype('float32')
+# X_train /= 255
+# X_test /= 255
+#
+# Y_train = np_utils.to_categorical(y_train, nb_classes)
+# Y_test = np_utils.to_categorical(y_test, nb_classes)
+#
+# print(X_train.shape)
+# print(X_test.shape)
