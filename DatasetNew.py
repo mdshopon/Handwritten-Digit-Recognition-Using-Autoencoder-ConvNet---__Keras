@@ -109,8 +109,24 @@ def SMALLINDIAN():
                     break
             else:
                 continue
+def CMATERSMOOTH():
+    for filename in listdir("TrainSmooth"):
+        if filename.endswith(".bmp"):
+            FILE = "TrainSmooth/"+ filename;
+            img = cv2.imread(FILE)
+            col_img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+            image = cv2.GaussianBlur(col_img , (3, 3), 0)
+            # print(img.shape)
+            #col_img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+            #image = cv2.resize(col_img, (32, 32))
+            FILE = "TrainSmooth2/" + filename
+            cv2.imwrite(FILE, image)
+            print(image.shape)
+        else:
+            continue
 
-SMALLINDIAN()
+CMATERSMOOTH()
+#SMALLINDIAN()
 #
 # #invertBackground()
 # #toGray()
